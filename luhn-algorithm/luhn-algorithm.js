@@ -1,16 +1,20 @@
 const validateBtn = document.querySelector("#validateBtn");
 const resultDisplay = document.querySelector("#result");
-const inputValue = document.getElementById("inputValue")
+const inputField = document.getElementById("inputValue")
 
 validateBtn.addEventListener("click", updateDisplay);
-inputValue.addEventListener("")
+inputField.addEventListener("input", updateDisplay);
 
-function updateDisplay(){
-    resultDisplay.textContent = entryValidator();
+function updateDisplay(event){
+    if(event.target.nodeName === "BUTTON"){
+        resultDisplay.textContent = entryValidator();
+    }else{
+        resultDisplay.textContent = "";
+    }
 }
 
 function entryValidator(){
-    let entry = inputValue.value;
+    let entry = inputField.value;
     entry = entry.replace(/\s+/g, '');
     if (!hasOnlyNumbers(entry) || entry.length <= 1){
         return "Invalid"
