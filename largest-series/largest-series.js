@@ -6,12 +6,13 @@ const result = document.querySelector("#result");
 checkResultBtn.addEventListener("click", solve);
 
 function solve(){
-    let largest = 0;
     const num = +numOfSeries.value;
     const numList = integerList.value;
     if (validInput(num, numList)){
-        console.log("pass")
         let arr = numList.split("").map(((element) => {return +element}));
+        let startIndex = 0;
+        let largest = 0;
+        let arrOfLargest = arr.slice(0, num); //if highest ends up being 0 will be the first set
         const repeatLen = arr.length-(num);
         for (i = 0; i <= repeatLen; i++){
             let hold_arr = arr.slice(i, (i+num));
@@ -19,6 +20,14 @@ function solve(){
                 i += hold_arr.indexOf(0);
                 continue;
             }
+            if (multiply(hold_arr) > largest){
+                largest = multiply(hold_arr);
+                arrOfLargest = hold_arr;
+                startPositon = i;
+            }
+            console.log(largest);
+            console.log(arrOfLargest);
+            console.log(startPositon);
         }
     }
     return "Ivalid Input";
@@ -32,4 +41,8 @@ function validInput(num, arr){
         }
     }
     return false;
+}
+
+function multiply(arr){
+    return arr.reduce((multiplied, current) => multiplied * current);
 }
