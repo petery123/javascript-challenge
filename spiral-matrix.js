@@ -2,7 +2,7 @@ const matrixSize = document.querySelector("#matrixSize");
 const getSpiralBtn = document.querySelector("#getSpiralBtn");
 const result = document.querySelector(".result")
 
-getSpiralBtn.addEventListener("click", createSpiralMatrix);
+getSpiralBtn.addEventListener("click", updateResult);
 
 let movement = {
     moves: [
@@ -13,6 +13,7 @@ let movement = {
     ],
     moveIndex: 0,
     currentMove: [0, 1],
+
     nextMove: function(){
         if (this.moveIndex === 3){
             this.moveIndex = 0;
@@ -20,30 +21,36 @@ let movement = {
             this.moveIndex++;
         }
         this.currentMove = this.moves[this.moveIndex]
-    }
+    },
+    reset: function(){
+        this.moveIndex = 0;
+        this.currentMove = [0, 1];
+    },
 }
+
 let currentPos = {
     x: 0,
     y: 0,
-    atStart: function(){
-        return this.x === 0 && this.y === 0;
+
+    reset: function(){
+        this.x = 0;
+        this.y = 0;
     },
-};
+}
 
 function createEmptyMatrix(length){
     let emptyMatrix = [];
     let row = [];
     for (i = 0; i < length; i++){
         row.push(0);
-    };
+    }
     for (i = 0; i < length; i++){
         emptyMatrix.push(row.slice());
-    };
+    }
     return emptyMatrix;
 }
 
-function createSpiralMatrix(){
-    let length = matrixSize.value;
+function createSpiralMatrix(length){
     let currentNum = 1;
     if (validLength(length)){
         let matrix = createEmptyMatrix(length);
@@ -66,13 +73,19 @@ function createSpiralMatrix(){
             }
             moveSteps--;
         }
+        movement.reset();
+        currentPos.reset();
         return matrix;
     }
     return false;
 }
 
 function validLength(length){
-    return length > 0;
+    if (+length != NaN){
+        if (+length > 0){
+            return true;
+        }
+    }
 }
 
 function nextStep(){
@@ -80,17 +93,29 @@ function nextStep(){
         let y = movement.currentMove[1];
         currentPos.x += x;
         currentPos.y += y;
-};
+}
 
 function updateResult(){
+    result.textContent = "";
     let length = matrixSize.value;
-    if (createSpiralMatrix(length)){
-        for (i = 0; i < length; i){
-            let row = document.createElement("div");
-            row.textContent = matrix[i];
-            result.appendChild(row);
+    let matrix = createSpiralMatrix(length);
+    if (matrix) {
+        let table = document.createElement('table'); // Create a table element
+
+        for (let i = 0; i < length; i++) {
+            let row = document.createElement('tr');
+
+            for (let j = 0; j < length; j++) {
+                let cell = document.createElement('td');
+                cell.textContent = matrix[i][j];
+                row.appendChild(cell);
+            }
+
+            table.appendChild(row);
         }
-    }else{
+
+        result.appendChild(table); // Append the table to the result element
+    } else {
         result.textContent = "Invalid Entry";
-    }    
+    }
 }
