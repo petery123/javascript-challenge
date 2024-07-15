@@ -2,7 +2,7 @@ const matrixSize = document.querySelector("#matrixSize");
 const getSpiralBtn = document.querySelector("#getSpiralBtn");
 const result = document.querySelector(".result")
 
-getSpiralBtn.addEventListener("click", updateResult);
+getSpiralBtn.addEventListener("click", createSpiralMatrix);
 
 let movement = {
     moves: [
@@ -24,7 +24,10 @@ let movement = {
 }
 let currentPos = {
     x: 0,
-    y: 0
+    y: 0,
+    atStart: function(){
+        return this.x === 0 && this.y === 0;
+    },
 };
 
 function createEmptyMatrix(length){
@@ -39,13 +42,30 @@ function createEmptyMatrix(length){
     return emptyMatrix;
 }
 
-function createSpiralMatrix(length){
+function createSpiralMatrix(){
+    let length = matrixSize.value;
+    let currentNum = 1;
     if (validLength(length)){
-        matrix = createEmptyMatrix(length);
-        fillFirstRow(length);
-        
-        console.log(matrix);
-        console.log(movement);
+        let matrix = createEmptyMatrix(length);
+        let moveSteps = length;
+        let lastNum = (length * length);
+        while (currentNum <= lastNum){
+            for (i = 0; i < 2; i++){
+                if (moveSteps === length){
+                    i = 2; // when on the first line make loop run once
+                }
+                for (j = 1; j <= moveSteps; j++){
+                    matrix[currentPos.x][currentPos.y] = currentNum;
+                    if (j != moveSteps){
+                        nextStep();
+                    }
+                    currentNum ++;
+                }
+                movement.nextMove();
+                nextStep();
+            }
+            moveSteps--;
+        }
         return matrix;
     }
     return false;
@@ -55,16 +75,12 @@ function validLength(length){
     return length > 0;
 }
 
-function fillFirstRow(length){
-    for (i = 1; i <= length; i++){
-        matrix[currentPos.x][currentPos.y] = i;
+function nextStep(){
         let x = movement.currentMove[0];
         let y = movement.currentMove[1];
         currentPos.x += x;
         currentPos.y += y;
-    }
-    movement.nextMove();
-}
+};
 
 function updateResult(){
     let length = matrixSize.value;
