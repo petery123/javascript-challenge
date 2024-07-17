@@ -1,21 +1,24 @@
 const mapInput = document.querySelector("#mapInput");
 const resultBtn = document.querySelector("#resultBtn");
+const matrixDisplay = document.querySelector("#matrixDisplay");
+const shortestLenDisplay = document.querySelector("#shortestLenDisplay");
 
 resultBtn.addEventListener('click', updateResult);
 
 const MOVES = [
-    [1, 0], //E
-    [1, 1] //SE
-    [0, 1], //S
-    [-1, 1], //SW
-    [-1, 0], //W
+    [0, 1], //E
+    [1, 1], //SE
+    [1, 0], //S
+    [1, -1], //SW
+    [0, -1], //W
     [-1,-1], //NW
-    [0, -1], //N
-    [1, -1], //NE
-    
+    [-1, 0], //N
+    [-1, 1] //NE
 ]
 
-let shortestLen = 0;
+let movesCounter = 0;
+let shortestLen;
+let shortestMap = [];
 
 function validateInput(input){
     return Number.isInteger(Math.sqrt(input.split(",").length));
@@ -50,34 +53,70 @@ function validateMove(currentPos, move, matrixMap){
     return false;
 }
 
-function nextMove(currentPos, matrixMap, movesLen){
-    let prevPos = currentPos;
-    for (i = 0; i < 8; i++){
-        let move = MOVES[i];
-        if (validateMove(currentPos, move, matrixMap)){
+function nextMove(currentPos, matrixMap){
+    let prevPos = currentPos.slice();
+    for (let i = 0; i < 8; i++){
+        currentPos = prevPos.slice();
+        let move = MOVES[i].slice();
+        if (movesCounter < shortestLen && validateMove(currentPos, move, matrixMap)){
             currentPos = [currentPos[0] + move[0], currentPos[1] + move[1]];
-            movesLen++;
             if (matrixMap[currentPos[0]][currentPos[1]] === "d"){
-                matrixMap[currentPos[0]][currentPos[1]] = "m";
-                nextMove(currentPos, matrixMap, movesLen);
+                movesCounter++;
+                matrixMap[currentPos[0]][currentPos[1]] = `m${movesCounter}`;
+                nextMove(currentPos, matrixMap);
             }else{
-                updateShortest(movesLen);
-                currentPos = prevPos;
-                movesLen--;
+                movesCounter++;
+                updateShortest(movesCounter, matrixMap);
+                movesCounter--;
+                matrixMap[prevPos[0]][prevPos[1]] = "d";
+                break;
             }
         }else if (i === 7){
-            currentPos = prevPos;
-            movesLen--;
+            break;
         }
+    }
+    movesCounter--;
+    matrixMap[prevPos[0]][prevPos[1]] = "d";
+}
+
+function updateShortest(movesCounter, map){
+    if (movesCounter < shortestLen){
+        shortestLen = movesCounter;
+        shortestMap = map.map(subArray => [...subArray]);
     }
 }
 
-function updateShortest(movesLen){
-    if (movesLen < shortestLen){
-        shortestLen = movesLen;
+function solve(){
+    let input = mapInput.value;
+    if (validateInput(input)){
+        let matrixMap = getMatrix(input);
+        shortestLen = matrixMap.length * matrixMap.length;
+        nextMove([0,0], matrixMap);
     }
+}
+
+function addMatrixTable(){
+    const table = document.createElement("table");
+    const length = shortestMap.length;
+
+    for(i = 0; i < length; i++){
+        let row = document.createElement("tr");
+
+        for(j = 0; j < length; j++){
+            let cell = document.createElement("td");
+            cell.textContent = shortestMap[i][j];
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+    matrixDisplay.appendChild(table);
 }
 
 function updateResult(){
-    return true;
+    matrixDisplay.textContent = "";
+    shortestLenDisplay.textContent = "";
+    movesCounter = 0;
+    solve();
+    addMatrixTable();
+    shortestLenDisplay.textContent = shortestLen;
 }
