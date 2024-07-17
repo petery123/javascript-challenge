@@ -3,6 +3,16 @@ const resultBtn = document.querySelector("#resultBtn");
 
 resultBtn.addEventListener('click', updateResult);
 
+const MOVES = [
+    [0, 1], //S
+    [-1, 1], //SW
+    [-1, 0], //W
+    [-1,-1], //NW
+    [0, -1], //N
+    [1, -1], //NE
+    [1, 0], //E
+    [1, 1] //SE
+]
 function validateInput(input){
     return Number.isInteger(Math.sqrt(input.split(",").length));
 }
@@ -22,6 +32,7 @@ function convertToMatrix(input){
     }
     return matrixMap;
 }
+
 function updateResult(){
     return true;
 }
