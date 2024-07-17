@@ -18,7 +18,7 @@ const MOVES = [
 
 let movesCounter = 0;
 let shortestLen;
-let shortestMap = [];
+let shortestMap;
 
 function validateInput(input){
     return Number.isInteger(Math.sqrt(input.split(",").length));
@@ -59,20 +59,19 @@ function nextMove(currentPos, matrixMap){
         currentPos = prevPos.slice();
         let move = MOVES[i].slice();
         if (movesCounter < shortestLen && validateMove(currentPos, move, matrixMap)){
+            // only if the counter is less than the shortest length (to avoid checkin unnecessary options) 
+            //AND move is valid
             currentPos = [currentPos[0] + move[0], currentPos[1] + move[1]];
+            movesCounter++;
             if (matrixMap[currentPos[0]][currentPos[1]] === "d"){
-                movesCounter++;
                 matrixMap[currentPos[0]][currentPos[1]] = `m${movesCounter}`;
                 nextMove(currentPos, matrixMap);
             }else{
-                movesCounter++;
                 updateShortest(movesCounter, matrixMap);
                 movesCounter--;
                 matrixMap[prevPos[0]][prevPos[1]] = "d";
                 break;
             }
-        }else if (i === 7){
-            break;
         }
     }
     movesCounter--;
@@ -115,8 +114,14 @@ function addMatrixTable(){
 function updateResult(){
     matrixDisplay.textContent = "";
     shortestLenDisplay.textContent = "";
+    shortestMap = undefined;
     movesCounter = 0;
     solve();
-    addMatrixTable();
-    shortestLenDisplay.textContent = shortestLen;
+    if (shortestMap){
+        addMatrixTable();
+        shortestLenDisplay.textContent = shortestLen;
+    }else{
+        matrixDisplay.textContent = "Matts path is blocked by trees";
+        shortestLenDisplay.textContent = "Matts path is blocked by trees";
+    }   
 }
