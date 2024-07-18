@@ -19,10 +19,14 @@
     </nav>
     <div class="container">
         <div class="inputFields">
-            <label for="scaleMasses"></label>
-            <input type="text" id="scaleMasses">
-            <label for="weights"></label>
-            <input type="text" id="weights">
+            <div class="scaleMassInput">
+                <label for="scaleMasses">Enter mass of two scales (comma separated)</label>
+                <input type="text" id="scaleMasses">
+            </div>
+            <div class="weightsInput">
+                <label for="weights">Enter weights available (comma separated)</label>
+                <input type="text" id="weights">
+            </div>
         </div>
         <button id="resultBtn">Get Result</button>
         <div class="resultDisplay"></div>

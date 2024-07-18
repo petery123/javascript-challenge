@@ -5,12 +5,16 @@ const resultDisplay = document.querySelector(".resultDisplay");
 
 resultBtn.addEventListener("click", updateResult);
 
+let eachSingleArr = false;
+
 function getData(){
-    let scaleMassArr = scaleMassesInput.textContent.split(",");
-    let weightsArr = weightsInput.textContent.split(",");
+    let scaleMassArr = scaleMassesInput.value.split(",");
+    let weightsArr = weightsInput.value.split(",");
     let data = [];
 
+    console.log("me")
     if (validateScaleMasses(scaleMassArr)){
+        
         data.push(scaleMassArr);
         if (validateWeights(weightsArr)){
             data.push(weightsArr);
@@ -38,32 +42,46 @@ function solve(){
         if (weights.includes(max-min)){//checks if a single mass could balance
             return [max-min];
         }else{
-            let eachSingle = linearSolve(min, max, weights);
-            if (eachSingle){
-                return eachSingle;
+            linearSolve(min, max, weights);
+            if (eachSingleArr){
+                return eachSingleArr;
             }else{
-                3
+                return doubleMinSolve(min, max, weights);
             }
         }
     }
-    return false;
+    return "Invalid Data";
 }
 
 function linearSolve(min, max, weights){
-    let lastWeight = weights.pop();
+    let weightHolder = weights.slice();
+    let lastWeight = weightHolder.pop();
     let holdNum = min + lastWeight;
-    for (let i = 0; i < weights.length; i++){
-        if (holdNum === max + weights[i]){
-            return [weights[i], lastWeight];
+    for (let i = 0; i < weightHolder.length; i++){
+        if (holdNum === max + weightHolder[i]){
+            eachSingleArr = [weightHolder[i], lastWeight];
+            return
         }
     }
-    if (weights.length === 1){
-        return false;
+    if (weightHolder.length === 1){
+        return
     }else{
-        linearSolve(min, max, weights);
+        linearSolve(min, max, weightHolder);
     }
+}
+
+function doubleMinSolve(min, max, weights){
+    for (let i = 0; i < weights.length; i++){
+        let search = max - (min + weights[i]);
+        if (weights.includes(search)){
+            return [weights[i], search];
+        }
+    }
+    return "Imbalanced";
 }
 
 function updateResult(){
     resultDisplay.textContent = "";
+    eachSingleArr = false;
+    resultDisplay.textContent = solve();
 }
