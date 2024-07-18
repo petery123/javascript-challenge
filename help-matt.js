@@ -19,9 +19,15 @@ const MOVES = [
 let movesCounter = 0;
 let shortestLen;
 let shortestMap;
+let solved = false;
 
 function validateInput(input){
-    return Number.isInteger(Math.sqrt(input.split(",").length));
+    let inputArr = input.split(",");
+    if (Number.isInteger(Math.sqrt(inputArr.length))){//checks if it can be made into a square
+        const stringTester = /^[mM][td]*h[td]*$/;
+        return stringTester.test(inputArr.join(""));
+    }
+    return false;
 }
 
 function getMatrix(input){
@@ -91,6 +97,9 @@ function solve(){
         let matrixMap = getMatrix(input);
         shortestLen = matrixMap.length * matrixMap.length;
         nextMove([0,0], matrixMap);
+        solved = true;
+    }else{
+        alert("Invalid Entry");
     }
 }
 
@@ -112,16 +121,23 @@ function addMatrixTable(){
 }
 
 function updateResult(){
+    reset();
+    solve();
+    if (solved){
+        if (shortestMap){
+            addMatrixTable();
+            shortestLenDisplay.textContent = shortestLen;
+        }else{
+            matrixDisplay.textContent = "Matts path is blocked by trees";
+            shortestLenDisplay.textContent = "Matts path is blocked by trees";
+        }  
+    }
+}
+
+function reset(){
     matrixDisplay.textContent = "";
     shortestLenDisplay.textContent = "";
     shortestMap = undefined;
     movesCounter = 0;
-    solve();
-    if (shortestMap){
-        addMatrixTable();
-        shortestLenDisplay.textContent = shortestLen;
-    }else{
-        matrixDisplay.textContent = "Matts path is blocked by trees";
-        shortestLenDisplay.textContent = "Matts path is blocked by trees";
-    }   
+    solved = false;
 }
