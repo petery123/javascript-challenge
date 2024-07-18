@@ -31,15 +31,37 @@ function validateWeights(weightsArr){
 function solve(){
     let data = getData();
     if (data){
-        let max = data[0][0];
-        let min = data[0][1];
+        let max = +data[0][0];
+        let min = +data[0][1];
         [max, min] = min > max ? [min, max] : [max, min];
-        let weights = data[1];
+        let weights = data[1].sort().map((element) => {return +element});
         if (weights.includes(max-min)){//checks if a single mass could balance
             return [max-min];
+        }else{
+            let eachSingle = linearSolve(min, max, weights);
+            if (eachSingle){
+                return eachSingle;
+            }else{
+                3
+            }
         }
     }
     return false;
+}
+
+function linearSolve(min, max, weights){
+    let lastWeight = weights.pop();
+    let holdNum = min + lastWeight;
+    for (let i = 0; i < weights.length; i++){
+        if (holdNum === max + weights[i]){
+            return [weights[i], lastWeight];
+        }
+    }
+    if (weights.length === 1){
+        return false;
+    }else{
+        linearSolve(min, max, weights);
+    }
 }
 
 function updateResult(){
