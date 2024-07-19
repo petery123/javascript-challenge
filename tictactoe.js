@@ -17,7 +17,7 @@ function validateEntrySize(entryArr){
 
 function validateEntryContent(entryArr){
     let entryStr = entryArr.join("");
-    const textCharRegex = /^[X0-]$/;
+    const textCharRegex = /^[XO-]$/;
     for (const char of entryStr){
         if (!textCharRegex.test(char)){
             return false;
