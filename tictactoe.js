@@ -42,6 +42,12 @@ function checkWin(entryArr){
     let entryStr = entryArr.join("");
     if (entryStr.includes("X") || entryStr.includes("O")){
         let entry2DArr = convertTo2DArr(entryArr);
+        if (checkRowWin(entry2DArr)){
+            return true;
+        }
+        if (checkColumnWin(entry2DArr)){
+            return true;
+        }
     }
     return "Nobody moved"
 }
@@ -62,10 +68,31 @@ function checkRowWin(TwoDArr){
     for (let i = 0; i < TwoDArr.length; i++){
         const equalsX = (currentValue) => currentValue === "X";
         const equalsY = (currentValue) => currentValue === "Y";
-        if (TwoDArr[i].every(equalsX) || (TwoDArr[i].every(equalsX))){
+        if (TwoDArr[i].every(equalsX) || (TwoDArr[i].every(equalsY))){
             return true;
         }
     }
+}
+
+function checkColumnWin(TwoDArr){
+    let transposedArr = transposeTwoDArr(TwoDArr);
+    return checkRowWin(transposedArr);
+}
+
+function checkDiagonalWin(TwoDArr){
+    
+}
+
+function transposeTwoDArr(TwoDArr){
+    let holderArr = [];
+    for (let i = 0; i < TwoDArr.length; i++){
+        let row = [];
+        for (let j = 0; j < TwoDArr.length; j++){
+            row.push(TwoDArr[j][i]);
+        }
+        holderArr.push(row);
+    }
+    return holderArr;
 }
 
 function updateResult(){
