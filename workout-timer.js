@@ -32,12 +32,26 @@ let timer = {
 }
 
 continueBtn.addEventListener("click", continueTimer);
+pauseBtn.addEventListener("click", pauseTimer);
+
+let startTimer;
 
 function continueTimer(){
     if (timer.status === "stopped"){
         timer.status = "continue";
         timer.reset();
-        setInterval(updateDisplay, 1000);
+        startTimer = setInterval(updateDisplay, 1000);
+    }
+    if (timer.status === "paused"){
+        timer.status = "continue";
+        startTimer = setInterval(updateDisplay, 1000);
+    }
+}
+
+function pauseTimer(){
+    if (timer.status === "continue"){
+        timer.status = "paused";
+        clearInterval(startTimer);
     }
 }
 
