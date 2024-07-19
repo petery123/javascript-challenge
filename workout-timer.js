@@ -1,7 +1,7 @@
 const timerDisplay = document.querySelector(".timer");
 const continueBtn = document.querySelector("#continue");
 const pauseBtn = document.querySelector("#pause");
-const stopBtn = document.querySelector("#stopBtn");
+const stopBtn = document.querySelector("#stop");
 
 let timer = {
     hours: 0,
@@ -33,13 +33,14 @@ let timer = {
 
 continueBtn.addEventListener("click", continueTimer);
 pauseBtn.addEventListener("click", pauseTimer);
+stopBtn.addEventListener("click", stopTimer);
 
 let startTimer;
 
 function continueTimer(){
     if (timer.status === "stopped"){
-        timer.status = "continue";
         timer.reset();
+        timer.status = "continue";
         startTimer = setInterval(updateDisplay, 1000);
     }
     if (timer.status === "paused"){
@@ -55,9 +56,16 @@ function pauseTimer(){
     }
 }
 
+function stopTimer(){
+    if (timer.status === "continue"){
+        timer.status = "stopped";
+        clearInterval(startTimer);
+    }
+}
+
 function updateDisplay(){
     if (timer.status === "continue"){
         timer.addSecond();
-        timerDisplay.textContent = `${timer.hours}:${timer.minutes}:${timer.seconds}`;
+        timerDisplay.textContent = `${timer.hours.toString().padStart(2, '0')}:${timer.minutes.toString().padStart(2, '0')}:${timer.seconds.toString().padStart(2, '0')}`;
     }
 }
