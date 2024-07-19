@@ -48,6 +48,10 @@ function checkWin(entryArr){
         if (checkColumnWin(entry2DArr)){
             return true;
         }
+        if (checkDiagonalWin(entry2DArr)){
+            return true;
+        }
+        return false;
     }
     return "Nobody moved"
 }
@@ -80,7 +84,17 @@ function checkColumnWin(TwoDArr){
 }
 
 function checkDiagonalWin(TwoDArr){
-    
+    let diagonalArr = getDiagonalArr(TwoDArr);
+    return checkRowWin(diagonalArr);
+}
+
+function getDiagonalArr(TwoDArr){
+    let diagonalArr = [[],[]];
+    for (let j = 0; j < 3; j++){
+        diagonalArr[0].push(TwoDArr[j][j]);
+        diagonalArr[1].push(TwoDArr[j][2-j]);
+    }
+    return diagonalArr;
 }
 
 function transposeTwoDArr(TwoDArr){
@@ -96,5 +110,5 @@ function transposeTwoDArr(TwoDArr){
 }
 
 function updateResult(){
-
+    
 }
