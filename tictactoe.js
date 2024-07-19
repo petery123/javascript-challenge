@@ -11,6 +11,8 @@ function validateEntrySize(entryArr){
                 return false;
             }
         }
+    }else{
+        return false;
     }
     return true;
 }
@@ -110,5 +112,5 @@ function transposeTwoDArr(TwoDArr){
 }
 
 function updateResult(){
-    
+    resultDisplay.textContent = solve();
 }
